@@ -152,6 +152,72 @@ class EvnexChargerNetworkStatusSensor(EvnexChargerEntity, SensorEntity):
         return None
 
 
+class EvnexChargerReadingChargingSensor(EvnexChargerEntity, SensorEntity):
+    entity_description = SensorEntityDescription(
+        key="reading_charging",
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        native_unit_of_measurement=UnitOfPower.WATT,
+        suggested_unit_of_measurement=UnitOfPower.KILO_WATT,
+    )
+
+    def __init__(
+        self,
+        coordinator: DataUpdateCoordinator,
+        charger_id: str,
+        org_id: str,
+    ) -> None:
+        """Initialize the current sensor."""
+        super().__init__(
+            coordinator=coordinator,
+            charger_id=charger_id,
+            org_id=org_id,
+            key=self.entity_description.key,
+        )
+
+    @property
+    def native_value(self):
+        self.reading = self.coordinator.data.get("charge_point_reading", {}).get(
+            self.charger_id
+        )
+        if self.reading:
+            return self.reading.chargingActivePower
+        return 0.0
+
+
+class EvnexChargerReadingSupplySensor(EvnexChargerEntity, SensorEntity):
+    entity_description = SensorEntityDescription(
+        key="reading_supply",
+        device_class=SensorDeviceClass.POWER,
+        state_class=SensorStateClass.MEASUREMENT,
+        native_unit_of_measurement=UnitOfPower.WATT,
+        suggested_unit_of_measurement=UnitOfPower.KILO_WATT,
+    )
+
+    def __init__(
+        self,
+        coordinator: DataUpdateCoordinator,
+        charger_id: str,
+        org_id: str,
+    ) -> None:
+        """Initialize the current sensor."""
+        super().__init__(
+            coordinator=coordinator,
+            charger_id=charger_id,
+            org_id=org_id,
+            key=self.entity_description.key,
+        )
+
+    @property
+    def native_value(self):
+        self.reading = self.coordinator.data.get("charge_point_reading", {}).get(
+            self.charger_id
+        )
+        if self.reading:
+            return self.reading.supplyActivePower
+        return 0.0
+
+
 class EvnexChargerSessionEnergy(EvnexChargerEntity, SensorEntity):
     entity_description = SensorEntityDescription(
         key="session_energy",
@@ -665,6 +731,14 @@ async def async_setup_entry(
         # Charger-level sensors
         entities.append(
             EvnexChargerNetworkStatusSensor(coordinator, charger_id, org_id_for_charger)
+        )
+        entities.append(
+            EvnexChargerReadingChargingSensor(
+                coordinator, charger_id, org_id_for_charger
+            )
+        )
+        entities.append(
+            EvnexChargerReadingSupplySensor(coordinator, charger_id, org_id_for_charger)
         )
         entities.append(
             EvnexChargerSessionEnergy(coordinator, charger_id, org_id_for_charger)

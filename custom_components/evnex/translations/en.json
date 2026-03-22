@@ -90,6 +90,12 @@
             "org_wide_power_usage_today": {
                 "name": "Total power usage today"
             },
+            "reading_charging": {
+                "name": "Live load charger"
+            },
+            "reading_supply": {
+                "name": "Live load grid"
+            },
             "session_cost": {
                 "name": "Charge cost"
             },
