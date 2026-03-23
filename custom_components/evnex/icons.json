@@ -29,6 +29,12 @@
       "charger_network_status": {
         "default": "mdi:wifi"
       },
+      "reading_charging": {
+        "default": "mdi:ev-station"
+      },
+      "reading_supply": {
+        "default": "mdi:transmission-tower"
+      },
       "session_energy": {
         "default": "mdi:lightning-bolt-circle"
       },

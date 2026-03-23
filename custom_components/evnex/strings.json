@@ -62,6 +62,12 @@
           "offline": "Offline"
         }
       },
+      "reading_charging": {
+        "name": "Live load charger"
+      },
+      "reading_supply": {
+        "name": "Live load grid"
+      },
       "session_energy": {
         "name": "Session energy added"
       },

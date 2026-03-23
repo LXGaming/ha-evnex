@@ -10,7 +10,11 @@ from datetime import timedelta
 from typing import Optional
 
 from evnex.api import Evnex
-from evnex.schema.charge_points import EvnexChargePoint, EvnexChargePointOverrideConfig
+from evnex.schema.charge_points import (
+    EvnexChargePoint,
+    EvnexChargePointOverrideConfig,
+    EvnexChargePointEnergyMeterReadingResponse,
+)
 from evnex.schema.v3.charge_points import EvnexChargePointDetail
 
 from evnex.schema.user import EvnexUserDetail
@@ -146,6 +150,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             "charge_point_brief": {},  # by cp_id
             "charge_point_details": {},  # by cp_id
             "charge_point_override": {},  # by cp_id
+            "charge_point_reading": {},  # by cp_id
             "charge_point_sessions": {},  # by cp_id
             "connector_brief": {},  # by (cp_id, connectorId)
             "charge_point_to_org_map": {},  # by cp_id -> org_id
@@ -213,7 +218,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                         )
                     )
 
-                    # Only get the charge point override if the charge point is online!
+                    # Only get the charge point data if the charge point is online!
                     if charge_point_detail.networkStatus == "ONLINE":
                         _LOGGER.debug(
                             f"Getting evnex charge point override for '{charge_point.name}'"
@@ -230,17 +235,36 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                                 "Read timeout prevented getting charge point override"
                             )
                             charge_point_override = None
+
+                        # Don't block data update if a read timeout encountered
+                        try:
+                            charge_point_reading_response: EvnexChargePointEnergyMeterReadingResponse = await evnex_client.get_charge_point_energy_meter_reading(
+                                charge_point_id=charge_point.id
+                            )
+                            if charge_point_reading_response.status == "Accepted":
+                                charge_point_reading = (
+                                    charge_point_reading_response.data
+                                )
+                            else:
+                                charge_point_reading = None
+                        except ReadTimeout:
+                            _LOGGER.warning(
+                                "Read timeout prevented getting charge point energy meter reading"
+                            )
+                            charge_point_reading = None
                     else:
                         _LOGGER.debug(
                             "Not getting charge point override as charge point is not ONLINE"
                         )
                         charge_point_override = None
+                        charge_point_reading = None
 
                     data["charge_point_brief"][charge_point.id] = charge_point
                     data["charge_point_details"][charge_point.id] = charge_point_detail
                     data["charge_point_override"][charge_point.id] = (
                         charge_point_override
                     )
+                    data["charge_point_reading"][charge_point.id] = charge_point_reading
                     data["charge_point_sessions"][charge_point.id] = (
                         charge_point_sessions
                     )
