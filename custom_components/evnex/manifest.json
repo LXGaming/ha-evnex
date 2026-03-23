@@ -2,18 +2,19 @@
   "domain": "evnex",
   "name": "Evnex EV Charger",
   "codeowners": [
-    "@hardbyte"
+    "@hardbyte",
+    "@LXGaming"
   ],
   "config_flow": true,
-  "documentation": "https://github.com/hardbyte/ha-evnex",
+  "documentation": "https://github.com/LXGaming/ha-evnex",
   "integration_type": "device",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/hardbyte/ha-evnex/issues",
+  "issue_tracker": "https://github.com/LXGaming/ha-evnex/issues",
   "loggers": [
     "evnex"
   ],
   "requirements": [
-    "evnex==0.4.9"
+    "evnex@git+https://github.com/LXGaming/python-evnex.git"
   ],
   "version": "0.7.8"
 }
