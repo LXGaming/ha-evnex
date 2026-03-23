@@ -705,7 +705,10 @@ async def async_setup_entry(
                         coordinator, charger_id, org_id_for_charger, connector_id
                     )
                 )
-                if connector_detail_v3.meter.voltageL2N is not None:
+                if (
+                    connector_detail_v3.meter
+                    and connector_detail_v3.meter.voltageL2N is not None
+                ):
                     entities.append(
                         EvnexChargePortConnectorVoltageSensor(
                             coordinator,
@@ -715,7 +718,10 @@ async def async_setup_entry(
                             "l2",
                         )
                     )
-                if connector_detail_v3.meter.voltageL3N is not None:
+                if (
+                    connector_detail_v3.meter
+                    and connector_detail_v3.meter.voltageL3N is not None
+                ):
                     entities.append(
                         EvnexChargePortConnectorVoltageSensor(
                             coordinator,
@@ -731,7 +737,10 @@ async def async_setup_entry(
                         coordinator, charger_id, org_id_for_charger, connector_id
                     )
                 )
-                if connector_detail_v3.meter.currentL2 is not None:
+                if (
+                    connector_detail_v3.meter
+                    and connector_detail_v3.meter.currentL2 is not None
+                ):
                     entities.append(
                         EvnexChargePortConnectorCurrentSensor(
                             coordinator,
@@ -742,7 +751,10 @@ async def async_setup_entry(
                         )
                     )
 
-                if connector_detail_v3.meter.currentL3 is not None:
+                if (
+                    connector_detail_v3.meter
+                    and connector_detail_v3.meter.currentL3 is not None
+                ):
                     entities.append(
                         EvnexChargePortConnectorCurrentSensor(
                             coordinator,
@@ -753,7 +765,10 @@ async def async_setup_entry(
                         )
                     )
 
-                if connector_detail_v3.meter.temperature is not None:
+                if (
+                    connector_detail_v3.meter
+                    and connector_detail_v3.meter.temperature is not None
+                ):
                     entities.append(
                         EvnexChargePortConnectorTemperatureSensor(
                             coordinator, charger_id, org_id_for_charger, connector_id
