@@ -42,7 +42,7 @@ from .const import (
     TOKEN_FILE_NAME,
 )
 
-SCAN_INTERVAL = timedelta(minutes=5)
+SCAN_INTERVAL = timedelta(minutes=10)
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
